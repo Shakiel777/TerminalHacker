@@ -8,7 +8,8 @@ public class Hacker : MonoBehaviour {
     int level;
 
     enum Screen { MainMenu, Password, Win};
-    Screen currentScreen = Screen.MainMenu;
+    Screen currentScreen;
+    string password;
 
 	// Use this for initialization
 	void Start ()
@@ -35,22 +36,67 @@ public class Hacker : MonoBehaviour {
 
     void OnUserInput(string input)
     {
-        if (input == "menu")
+        if (input == "menu") // we can always go directly to main menu.
         {
             currentScreen = Screen.MainMenu;
             Terminal.ClearScreen();
             ShowMainMenu();
             return;
         }
+        else if (currentScreen == Screen.MainMenu)
+        {
+            RunMainMenu(input);
+        }
+        else if (currentScreen == Screen.Password)
+        {
+            CheckPassword(input);
+        }
+
+    }
+
+    private void CheckPassword(string input)
+    {
+        if (level == 1)
+        {
+            if(input == password)
+            {
+                Terminal.ClearScreen();
+                Terminal.WriteLine("Authentication accepted, \n\nlevel " + level + " begin.");
+            }
+            else
+            {
+                Terminal.ClearScreen();
+                Terminal.WriteLine("Invalid password, try again:");
+            }
+        }
+        if (level == 2)
+        {
+            if (input == password)
+            {
+                Terminal.ClearScreen();
+                Terminal.WriteLine("Authentication accepted, \n\nlevel " + level + " begin.");
+            }
+            else
+            {
+                Terminal.ClearScreen();
+                Terminal.WriteLine("Invalid password, try again:");
+            }
+        }
+    }
+
+    void RunMainMenu(string input)
+    {
         if (input == "1")
         {
             level = 1;
+            password = "hello";
             StartGame();
             return;
         }
         if (input == "2")
         {
             level = 2;
+            password = "crazy";
             StartGame();
             return;
         }
@@ -78,7 +124,7 @@ public class Hacker : MonoBehaviour {
             Terminal.WriteLine("The cone of silence is unavailable\nAgent 69.");
             return;
         }
-        
+
         else
         {
             Terminal.ClearScreen();
@@ -86,12 +132,20 @@ public class Hacker : MonoBehaviour {
         }
     }
 
-    private void StartGame()
+    void StartGame()
     {
         currentScreen = Screen.Password;
         Terminal.ClearScreen();
         Terminal.WriteLine("You have chosen level " + level);
         Terminal.WriteLine("Password:");
+    }
+
+    void Level1()
+    {
+
+    }
+    void Level2()
+    {
 
     }
 }
