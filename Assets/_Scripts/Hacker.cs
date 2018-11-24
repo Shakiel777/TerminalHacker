@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
 
 public class Hacker : MonoBehaviour {
@@ -10,6 +8,7 @@ public class Hacker : MonoBehaviour {
     string[] level2Passwords = { "cases", "protect", "service", "patrol", "civilian", "guards", "emergency" };
     string[] level3Passwords = { "federal", "criminal", "prestige", "protection", "exclusive", "bureau", "indictment" };
     string[] level4Passwords = { "surveillance", "investigate", "government", "oversight", "mysterious", "cryptography", "scrutinize" };
+    string menuHint = "You may type menu at any time.";
 
     // Game State
     int level;
@@ -32,7 +31,8 @@ public class Hacker : MonoBehaviour {
                             "1 - Public Library \n" + 
                             "2 - Police Department \n" + 
                             "3 - Federal Bureau of Investigation \n" + 
-                            "4 - National Security Advisor \n");
+                            "4 - National Security Advisor");
+        Terminal.WriteLine(menuHint);
     }
 
     void Greeting(string greeting)
@@ -62,98 +62,138 @@ public class Hacker : MonoBehaviour {
 
     private void CheckPassword(string input)
     {
-        if (level == 1)
-        {
             if(input == password)
-            {
-                Terminal.ClearScreen();
-                Terminal.WriteLine("Authentication accepted, \n\nlevel " + level + " begin.");
-            }
-            else
-            {
-                Terminal.ClearScreen();
-                Terminal.WriteLine("Invalid password, try again:");
-            }
-        }
-        if (level == 2)
         {
-            if (input == password)
-            {
-                Terminal.ClearScreen();
-                Terminal.WriteLine("Authentication accepted, \n\nlevel " + level + " begin.");
-            }
-            else
-            {
-                Terminal.ClearScreen();
-                Terminal.WriteLine("Invalid password, try again:");
-            }
+            DisplayWinScreen();
+            return;
         }
+        else
+            {
+            AskForPassword();
+            }
+    }
+
+    void DisplayWinScreen()
+    {
+        currentScreen = Screen.Win;
+        Terminal.ClearScreen();
+        ShowLevelReward();
+        Terminal.WriteLine(menuHint);
+        return;
+    }
+
+    void ShowLevelReward()
+    {
+        switch (level)
+        {
+            case 1:
+                Terminal.WriteLine("Acess to Public Library Granted!\n");
+                Terminal.WriteLine(@"
+      ______ ______
+    _/      Y      \_
+   // ~~ ~~ | ~~ ~  \\
+  // ~ ~ ~~ | ~~~ ~~ \\
+ //________.|.________\\
+`----------`-'----------'
+"                   );
+                break;
+            case 2:
+                Terminal.WriteLine("Anytown Police Mainframe:\n");
+                Terminal.WriteLine(@"
+     ___      .______    _______  
+    /   \     |   _  \  |       \ 
+   /  ^  \    |  |_)  | |  .--.  |
+  /  /_\  \   |   ___/  |  |  |  |
+ /  _____  \  |  |      |  '--'  |
+/__/     \__\ | _|      |_______/ 
+");
+                break;
+            case 3:
+                Terminal.WriteLine("Authentication accepted!\n" + "Welcome to the \nFederal Bureau of Investigation");
+                Terminal.WriteLine(@"
+ _______ .______    __  
+|   ____||   _  \  |  | 
+|  |__   |  |_)  | |  | 
+|   __|  |   _  <  |  | 
+|  |     |  |_)  | |  | 
+|__|     |______/  |__| 
+"                   );
+                break;
+            case 4:
+                Terminal.WriteLine("You cannot hack the NSA! We Hacked YOU!");
+                Terminal.WriteLine(@"
+.__   __.      _______.     ___      
+|  \ |  |     /       |    /   \     
+|   \|  |    |   (----`   /  ^  \    
+|  |\   | .----)   |    /  _____  \  
+|__| \__| |_______/    /__/     \__\                                      
+"                   );
+                break;
+            default:
+                Debug.LogError("Error! - invalid level # in Win Screen");
+                break;
+        }
+
     }
 
     void RunMainMenu(string input)
     {
-        if (input == "1")
+        bool isValidLevelNumber = (input == "1" || input == "2" || input == "3" || input == "4");
+        if (isValidLevelNumber)
         {
-            level = 1;
-            password = level1Passwords[0]; // TODO make random later
-            StartGame();
+            level = int.Parse(input);
+            AskForPassword();
             return;
         }
-        if (input == "2")
-        {
-            level = 2;
-            password = level2Passwords[0]; // TODO make random later
-            StartGame();
-            return;
-        }
-        if (input == "3")
-        {
-            level = 3;
-            password = level3Passwords[0]; // TODO make random later
-            StartGame();
-            return;
-        }
-        if (input == "4")
-        {
-            level = 4;
-            password = level4Passwords[0]; // TODO make random later
-            StartGame();
-            return;
-        }
-        if (input == "007")
+        if (input == "007") // easter egg
         {
             Terminal.ClearScreen();
             Terminal.WriteLine("Choose a valid level Mr. Bond.");
             return;
         }
-        if (input == "69")
+        if (input == "69") // easter egg
         {
             Terminal.ClearScreen();
             Terminal.WriteLine("The cone of silence is unavailable\nAgent 69.");
             return;
         }
-
         else
         {
             Terminal.ClearScreen();
             Terminal.WriteLine("please choose a valid level.");
+            Terminal.WriteLine(menuHint);
         }
     }
 
-    void StartGame()
+    void AskForPassword()
     {
         currentScreen = Screen.Password;
         Terminal.ClearScreen();
-        Terminal.WriteLine("You have chosen level " + level);
-        Terminal.WriteLine("Password:");
+        SetRandomPassword();
+        Terminal.WriteLine(menuHint);
+        Terminal.WriteLine("Password Scrambled: " + password.Anagram() + "\n" + "Password:");
     }
 
-    void Level1()
+    void SetRandomPassword()
     {
+        switch (level)
+        {
 
-    }
-    void Level2()
-    {
-
+            case 1:
+                password = level1Passwords[Random.Range(0, level1Passwords.Length)];
+                break;
+            case 2:
+                password = level2Passwords[Random.Range(0, level2Passwords.Length)];
+                break;
+            case 3:
+                password = level3Passwords[Random.Range(0, level3Passwords.Length)];
+                break;
+            case 4:
+                password = level4Passwords[Random.Range(0, level4Passwords.Length)];
+                break;
+            default:
+                Debug.LogError("Error! - invalid level # in start game");
+                break;
+        }
     }
 }
